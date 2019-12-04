@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -71,5 +72,10 @@ public class RedisTest {
         logger.info("这是info日志...");
         logger.warn("这是warn日志...");
         logger.error("这是error日志...");
+    }
+    @Test
+    public void testFilePath(){
+        File file=new File("");
+        System.out.println(file.getAbsoluteFile());
     }
 }

@@ -133,14 +133,6 @@ public Object addSongList(HttpServletRequest req){
         }
     }
 
-    @Configuration
-    public class MyPicConfig implements WebMvcConfigurer {
-        @Override
-        public void addResourceHandlers(ResourceHandlerRegistry registry) {
-            registry.addResourceHandler("/img/**").addResourceLocations("file:C:/Users/Administrator/Desktop/music-website-master/music-server/img/");
-        }
-    }
-
     //    返回指定标题对应的歌单
     @RequestMapping(value = "/api/songAlbum", method = RequestMethod.GET)
     public Object songAlbum(HttpServletRequest req){
