@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.example.demo.dao")
-public class HwMusicApplication {
+public class MusicApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HwMusicApplication.class, args);
+        SpringApplication.run(MusicApplication.class, args);
     }
 
 }

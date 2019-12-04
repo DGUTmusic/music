@@ -12,7 +12,7 @@ import java.util.Date;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class HwMusicApplicationTests {
+public class MusicApplicationTests {
 
     @Autowired
 
