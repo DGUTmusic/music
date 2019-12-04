@@ -44,7 +44,7 @@ export default {
   mixins: [mixin],
   data () {
     return {
-      musicName: 'Yin-music',
+      musicName: 'music',
       navMsg: [{
         name: '首页',
         path: '/home-page'

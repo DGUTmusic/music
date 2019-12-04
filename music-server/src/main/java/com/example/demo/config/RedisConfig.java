@@ -1,4 +1,4 @@
-package com.example.music.config;
+package com.example.demo.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class RedisConfig {
-    //过期时间30秒
+    //过期时间60秒
     private Duration timeToLive = Duration.ofSeconds(60L);
     Logger log= LoggerFactory.getLogger(getClass());
     @Bean

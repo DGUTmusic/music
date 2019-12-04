@@ -205,7 +205,7 @@ export default {
     saveMsg () {
       console.log(this.registerForm)
       let _this = this
-      let d = _this.registerForm.birth
+      let d = new Date(Date.parse(_this.registerForm.birth))
       var datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
       var params = new URLSearchParams()
       params.append('id', _this.userId)

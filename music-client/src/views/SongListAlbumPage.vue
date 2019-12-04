@@ -121,6 +121,14 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
+        }),
+        axios.get(`${_this.$store.state.HOST}/api/getScore?songListId=${id}&consumerId=${_this.userId}`)
+        .then(res => {
+          _this.value3 = res.data / 2
+          console.log(_this.value3)
+        })
+        .catch(function (error) {
+          console.log(error)
         })
     },
     // 提交评分

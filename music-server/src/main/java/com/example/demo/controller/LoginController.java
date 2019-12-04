@@ -223,8 +223,7 @@ public class LoginController {
     public class MyPicConfig implements WebMvcConfigurer {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
-            registry.addResourceHandler("/avatorImages/**")
-                    .addResourceLocations("file:C:/Users/Administrator/Desktop/music-website-master/music-server/avatorImages/");
+            registry.addResourceHandler("/avatorImages/**").addResourceLocations("file:C:/Users/Administrator/Desktop/music-website-master/music-server/avatorImages/");
         }
     }
 

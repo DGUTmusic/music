@@ -1,7 +1,10 @@
 package com.example.demo.dao;
 
 import com.example.demo.domain.Rank;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface RankMapper {
@@ -23,4 +26,9 @@ public interface RankMapper {
      * @return
      */
     int selectRankNum(Long songListId);
+
+    Rank getRank(@Param("consumerId") Integer consumerId,@Param("songListId") Integer songListId);
+
+    int updateScore
+            (@Param("consumerId") Integer consumerId,@Param("songListId") Integer songListId,@Param("score")Integer score);
 }

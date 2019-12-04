@@ -5,35 +5,36 @@ import com.example.demo.domain.Rank;
 import com.example.demo.service.impl.RankServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
-@Controller
 public class RankController {
 
     @Autowired
     private RankServiceImpl rankService;
 
 //    提交评分
-    @ResponseBody
     @RequestMapping(value = "/api/pushRank", method = RequestMethod.POST)
     public Object signup(HttpServletRequest req){
         JSONObject jsonObject = new JSONObject();
         String songListId = req.getParameter("songListId").trim();
         String consumerId = req.getParameter("consumerId").trim();
         String score = req.getParameter("score").trim();
+        boolean res;
+        if(rankService.getRank(Integer.valueOf(consumerId),Integer.valueOf(songListId))==null){
 
-        Rank rank = new Rank();
-        rank.setSongListId(Long.parseLong(songListId));
-        rank.setConsumerId(Long.parseLong(consumerId));
-        rank.setScore(Integer.parseInt(score));
+            Rank rank = new Rank();
+            rank.setSongListId(Long.parseLong(songListId));
+            rank.setConsumerId(Long.parseLong(consumerId));
+            rank.setScore(Integer.parseInt(score));
+            res = rankService.insert(rank);
 
-        boolean res = rankService.insert(rank);
+        }else {
+            res=rankService.updateScore(Integer.valueOf(consumerId),Integer.valueOf(songListId),Integer.valueOf(score));
+        }
         if (res){
             jsonObject.put("code", 1);
             jsonObject.put("msg", "评价成功");
@@ -50,5 +51,15 @@ public class RankController {
     public Object ranks(HttpServletRequest req){
         String songListId = req.getParameter("songListId");
         return rankService.selectAverScore(Long.parseLong(songListId));
+    }
+
+    @GetMapping("/api/getScore")
+    public int getRankScore(Integer consumerId, Integer songListId) {
+        Rank rank=rankService.getRank(consumerId,songListId);
+        if(rank==null){
+            return 0;
+        }else{
+            return rank.getScore();
+        }
     }
 }

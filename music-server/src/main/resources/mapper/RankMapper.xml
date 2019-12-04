@@ -58,4 +58,12 @@
       </if>
     </trim>
   </insert>
+  <select id="getRank" resultType="com.example.demo.domain.Rank">
+    select * FROM rank AS r
+    WHERE r.consumerId=#{consumerId} AND r.songListId=#{songListId}
+  </select>
+  <update id="updateScore">
+    UPDATE rank AS r SET r.score=#{score}
+    WHERE r.consumerId=#{consumerId} AND r.songListId=#{songListId}
+  </update>
 </mapper>
