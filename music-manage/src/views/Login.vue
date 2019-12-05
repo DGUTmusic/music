@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrap">
-    <div class="ms-title">Yin-music 后台管理</div>
+    <div class="ms-title">在线音乐平台 后台管理</div>
     <div class="ms-login">
       <el-form
         :model="ruleForm"
@@ -54,6 +54,7 @@ export default {
         .post(`${_this.$store.state.HOST}/api/loginadmin`, params)
         .then(res => {
           if (res.data.code === 1) {
+            localStorage.setItem('ms_username', res.data.name)
             this.$router.push('/Info')
             this.$notify({
               title: '欢迎回来',

@@ -19,6 +19,7 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @RestController
@@ -38,13 +39,13 @@ public class SongController {
         return factory.createMultipartConfig();
     }
 
-//    添加歌曲
+    //    添加歌曲
     @ResponseBody
     @RequestMapping(value = "/api/addSong", method = RequestMethod.POST)
-    public Object addSong(HttpServletRequest req, @RequestParam("file") MultipartFile mpfile){
+    public Object addSong(HttpServletRequest req, @RequestParam("file") MultipartFile mpfile) {
         JSONObject jsonObject = new JSONObject();
         String singer_id = req.getParameter("singerId").trim();
-        String name = req.getParameter("name").trim();
+        String name = req.getParameter("singerName").trim() + "-" + req.getParameter("name").trim();
         String introduction = req.getParameter("introduction").trim();
         String pic = "/img/songPic/tubiao.jpg";
         String lyric = req.getParameter("lyric").trim();
@@ -54,15 +55,15 @@ public class SongController {
             jsonObject.put("msg", "音乐上传失败！");
             return jsonObject;
         }
-        String fileName = mpfile.getOriginalFilename();
+        String fileName = name + ".mp3";
         String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "song";
         File file1 = new File(filePath);
-        if (!file1.exists()){
+        if (!file1.exists()) {
             file1.mkdir();
         }
 
         File dest = new File(filePath + System.getProperty("file.separator") + fileName);
-        String storeUrlPath = "/song/"+fileName;
+        String storeUrlPath = "/song/" + fileName;
         try {
             mpfile.transferTo(dest);
             Song song = new Song();
@@ -75,28 +76,29 @@ public class SongController {
             song.setLyric(lyric);
             song.setUrl(storeUrlPath);
             boolean res = songService.ifAdd(song);
-            if (res){
+            if (res) {
                 jsonObject.put("code", 1);
                 jsonObject.put("avator", storeUrlPath);
                 jsonObject.put("msg", "上传成功");
                 return jsonObject;
-            }else {
+            } else {
                 jsonObject.put("code", 0);
                 jsonObject.put("msg", "上传失败");
                 return jsonObject;
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             jsonObject.put("code", 0);
             jsonObject.put("msg", "上传失败" + e.getMessage());
             return jsonObject;
-        }finally {
+        } finally {
             return jsonObject;
         }
     }
-//    更新歌曲图片
+
+    //    更新歌曲图片
     @ResponseBody
     @RequestMapping(value = "/api/updateSongPic", method = RequestMethod.POST)
-    public Object updateSongPic(@RequestParam("file") MultipartFile urlFile, @RequestParam("id")int id){
+    public Object updateSongPic(@RequestParam("file") MultipartFile urlFile, @RequestParam("id") int id) {
         JSONObject jsonObject = new JSONObject();
 
         if (urlFile.isEmpty()) {
@@ -104,44 +106,44 @@ public class SongController {
             jsonObject.put("msg", "音乐上传失败！");
             return jsonObject;
         }
-        String fileName = System.currentTimeMillis()+urlFile.getOriginalFilename();
+        String fileName = System.currentTimeMillis() + urlFile.getOriginalFilename();
         String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "img" + System.getProperty("file.separator") + "songPic";
         File file1 = new File(filePath);
-        if (!file1.exists()){
+        if (!file1.exists()) {
             file1.mkdir();
         }
 
         File dest = new File(filePath + System.getProperty("file.separator") + fileName);
-        String storeUrlPath = "/img/songPic/"+fileName;
+        String storeUrlPath = "/img/songPic/" + fileName;
         try {
             urlFile.transferTo(dest);
             Song song = new Song();
             song.setId(id);
             song.setPic(storeUrlPath);
             boolean res = songService.updateSongPic(song);
-            if (res){
+            if (res) {
                 jsonObject.put("code", 1);
                 jsonObject.put("avator", storeUrlPath);
                 jsonObject.put("msg", "上传成功");
                 return jsonObject;
-            }else {
+            } else {
                 jsonObject.put("code", 0);
                 jsonObject.put("msg", "上传失败");
                 return jsonObject;
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             jsonObject.put("code", 0);
             jsonObject.put("msg", "上传失败" + e.getMessage());
             return jsonObject;
-        }finally {
+        } finally {
             return jsonObject;
         }
     }
 
-//    更新歌曲URL
+    //    更新歌曲URL
     @ResponseBody
     @RequestMapping(value = "/api/updateSongUrl", method = RequestMethod.POST)
-    public Object updateSongUrl(@RequestParam("file") MultipartFile urlFile, @RequestParam("id")int id){
+    public Object updateSongUrl(@RequestParam("file") MultipartFile urlFile, @RequestParam("id") int id) {
         JSONObject jsonObject = new JSONObject();
 
         if (urlFile.isEmpty()) {
@@ -149,52 +151,57 @@ public class SongController {
             jsonObject.put("msg", "音乐上传失败！");
             return jsonObject;
         }
-        String fileName = urlFile.getOriginalFilename();
+
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String dateString = formatter.format(currentTime);
+
+        String fileName = urlFile.getOriginalFilename() + dateString + ".mp3";
         String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "song";
         File file1 = new File(filePath);
-        if (!file1.exists()){
+        if (!file1.exists()) {
             file1.mkdir();
         }
 
         File dest = new File(filePath + System.getProperty("file.separator") + fileName);
-        String storeUrlPath = "/song/"+fileName;
+        String storeUrlPath = "/song/" + fileName;
         try {
             urlFile.transferTo(dest);
             Song song = new Song();
             song.setId(id);
             song.setUrl(storeUrlPath);
             boolean res = songService.updateSongUrl(song);
-            if (res){
+            if (res) {
                 jsonObject.put("code", 1);
                 jsonObject.put("avator", storeUrlPath);
                 jsonObject.put("msg", "上传成功");
                 return jsonObject;
-            }else {
+            } else {
                 jsonObject.put("code", 0);
                 jsonObject.put("msg", "上传失败");
                 return jsonObject;
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             jsonObject.put("code", 0);
             jsonObject.put("msg", "上传失败" + e.getMessage());
             return jsonObject;
-        }finally {
+        } finally {
             return jsonObject;
         }
     }
 
 
-//    删除歌曲
+    //    删除歌曲
     @RequestMapping(value = "/api/deleteSongs", method = RequestMethod.GET)
-    public Object deleteSongs(HttpServletRequest req){
+    public Object deleteSongs(HttpServletRequest req) {
         String id = req.getParameter("id");
         return songService.deleteSong(Integer.parseInt(id));
     }
 
-//    更新歌曲信息
+    //    更新歌曲信息
     @ResponseBody
     @RequestMapping(value = "/api/updateSongMsgs", method = RequestMethod.POST)
-    public Object updateSongMsgs(HttpServletRequest req){
+    public Object updateSongMsgs(HttpServletRequest req) {
         JSONObject jsonObject = new JSONObject();
         String id = req.getParameter("id").trim();
         String singer_id = req.getParameter("singerId").trim();
@@ -211,46 +218,46 @@ public class SongController {
         song.setLyric(lyric);
 
         boolean res = songService.updateSongMsg(song);
-        if (res){
+        if (res) {
             jsonObject.put("code", 1);
             jsonObject.put("msg", "修改成功");
             return jsonObject;
-        }else {
+        } else {
             jsonObject.put("code", 0);
             jsonObject.put("msg", "修改失败");
             return jsonObject;
         }
     }
 
-//    返回所有歌曲
+    //    返回所有歌曲
     @RequestMapping(value = "/AllSongs", method = RequestMethod.GET)
-    public Object AllSongs(){
+    public Object AllSongs() {
         return songService.listSongs();
     }
 
-//    返回指定歌曲ID的歌曲
+    //    返回指定歌曲ID的歌曲
     @RequestMapping(value = "/listSongsOfSongs", method = RequestMethod.GET)
-    public Object toSongs(HttpServletRequest req){
+    public Object toSongs(HttpServletRequest req) {
         String id = req.getParameter("id");
         return songService.listSongsOfSongs(Integer.parseInt(id));
     }
 
-//    返回指定歌手ID的歌曲
+    //    返回指定歌手ID的歌曲
     @RequestMapping(value = "/listSongs", method = RequestMethod.GET)
-    public Object toSongList(HttpServletRequest req){
+    public Object toSongList(HttpServletRequest req) {
         String singerId = req.getParameter("singerId");
         return songService.listSongsOfSinger(Integer.parseInt(singerId));
     }
 
-//    返回指定歌手名的歌曲
+    //    返回指定歌手名的歌曲
     @RequestMapping(value = "/listSongsOfSearch", method = RequestMethod.GET)
-    public Object toSearchLists(HttpServletRequest req){
+    public Object toSearchLists(HttpServletRequest req) {
         String name = req.getParameter("name");
-        return songService.searachSongLists('%'+ name + '%');
+        return songService.searachSongLists(name);
     }
 
     @RequestMapping(value = "/api/song", method = RequestMethod.GET)
-    public Object songOfName(HttpServletRequest req){
+    public Object songOfName(HttpServletRequest req) {
         String name = req.getParameter("name").trim();
         return songService.songOfName(name);
     }

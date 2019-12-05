@@ -104,12 +104,16 @@ export default {
       _this.tableData = []
       _this.tempDate = []
       let url = ''
-      if (_this.$route.query.type === 0) {
+      if (this.$route.query) {
+        localStorage.setItem('type', _this.$route.query.type)
+        localStorage.setItem('id', _this.$route.query.id)
+      }
+      if (localStorage.getItem('type') === '0') {
         url = `${_this.$store.state.HOST}/songComments?songId=`
-      } else if (_this.$route.query.type === 1) {
+      } else if (localStorage.getItem('type') === '1') {
         url = `${_this.$store.state.HOST}/songListComments?songListId=`
       }
-      _this.$axios.get(url + _this.$route.query.id).then(res => {
+      _this.$axios.get(url + localStorage.getItem('id')).then(res => {
         for (let item of res.data) {
           _this.getUsers(item.userId, item)
         }
@@ -145,7 +149,7 @@ export default {
     // 保存编辑
     saveEdit () {
       var params = new URLSearchParams()
-      params.append('d', this.form.id)
+      params.append('id', this.form.id)
       params.append('userId', this.form.userId)
       if (this.form.songId === null) {
         params.append('songId', '')
@@ -200,6 +204,16 @@ export default {
         })
         .catch(failResponse => {})
       _this.delVisible = false
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteComments?id=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }

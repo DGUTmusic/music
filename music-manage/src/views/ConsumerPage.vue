@@ -8,7 +8,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-button type="primary" icon="delete" class="handle-del mr10" @click="delAll">批量删除</el-button>
-                <el-input v-model="select_word" placeholder="筛选相关用户" class="handle-input mr10"></el-input>
+                <el-input v-model="select_word" placeholder="筛选用户(用户名)" class="handle-input mr10"></el-input>
                 <el-button type="primary" @click="centerDialogVisible = true">添加新用户</el-button>
             </div>
             <el-table :data="tableData" border stripe style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
@@ -38,9 +38,9 @@
                 <el-table-column prop="birth" label="生日" width="80"></el-table-column>
                 <el-table-column prop="introduction" label="签名"></el-table-column>
                 <el-table-column prop="location" label="地区" width="80"></el-table-column>
-                <el-table-column label="收藏" width="80">
+                <el-table-column label="TA的收藏" width="80">
                     <template  slot-scope="scope">
-                        <el-button size="mini" @click="getCollect(tableData[scope.$index].id)">收藏</el-button>
+                        <el-button size="mini" @click="getCollect(tableData[scope.$index].id)">查看</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="150">
@@ -148,7 +148,7 @@ export default {
       registerForm: { // 注册
         username: '',
         password: '',
-        sex: '',
+        sex: 1,
         phoneNum: '',
         email: '',
         birth: '',
@@ -269,14 +269,14 @@ export default {
           { required: true, message: '请选择性别', trigger: 'change' }
         ],
         phoneNum: [
-          { essage: '请选择日期', trigger: 'blur' }
+          { required: true, message: '请输入手机号码', trigger: 'blur' }
         ],
         email: [
-          { message: '请输入邮箱地址', trigger: 'blur' },
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
         ],
         birth: [
-          { required: true, type: 'date', message: '请选择日期', trigger: 'change' }
+          { required: true, type: 'date', message: '请选择日期', trigger: 'blur' }
         ],
         introduction: [
           { message: '请输入介绍', trigger: 'blur' }
@@ -346,37 +346,49 @@ export default {
     },
     addPeople () {
       let _this = this
-      let d = _this.registerForm.birth
-      var datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      var params = new URLSearchParams()
-      params.append('username', _this.registerForm.username)
-      params.append('password', _this.registerForm.password)
-      params.append('sex', _this.registerForm.sex)
-      params.append('phone_num', _this.registerForm.phoneNum)
-      params.append('email', _this.registerForm.email)
-      params.append('birth', datetime)
-      params.append('introduction', _this.registerForm.introduction)
-      params.append('location', _this.registerForm.location)
-      params.append('avator', '/img/user.jpg')
-      _this.$axios.post(`${_this.$store.state.HOST}/api/signup`, params)
-        .then(response => {
-          // console.log(response)
-          if (response.data.code === 1) {
-            _this.getData()
-            _this.registerForm = []
-            _this.$notify({
-              title: '添加成功',
-              type: 'success'
-            })
-          } else {
-            _this.$notify({
-              title: '添加失败',
-              type: 'error'
-            })
-          }
+      console.log(_this.registerForm)
+      if (!_this.registerForm.username || !_this.registerForm.password || !_this.registerForm.phoneNum || !_this.registerForm.email) {
+        _this.getData()
+        _this.registerForm = []
+        _this.$notify({
+          title: '必填信息未填',
+          type: 'error'
         })
-        .catch(failResponse => {})
-      _this.centerDialogVisible = false
+        _this.centerDialogVisible = false
+      } else {
+        let d = _this.registerForm.birth
+        var datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+        var params = new URLSearchParams()
+        params.append('username', _this.registerForm.username)
+        params.append('password', _this.registerForm.password)
+        params.append('sex', _this.registerForm.sex)
+        params.append('phone_num', _this.registerForm.phoneNum)
+        params.append('email', _this.registerForm.email)
+        params.append('birth', datetime)
+        params.append('introduction', _this.registerForm.introduction)
+        params.append('location', _this.registerForm.location)
+        params.append('avator', '/img/user.jpg')
+        _this.$axios.post(`${_this.$store.state.HOST}/api/signup`, params)
+          .then(response => {
+            // console.log(response)
+            if (response.data.code === 1) {
+              _this.getData()
+              _this.registerForm = []
+              _this.$notify({
+                title: '添加成功',
+                type: 'success'
+              })
+            } else {
+              _this.registerForm = []
+              _this.$notify({
+                title: '添加失败',
+                type: 'error'
+              })
+            }
+          })
+          .catch(failResponse => {})
+        _this.centerDialogVisible = false
+      }
     },
     // 编辑
     handleEdit (index, row) {
@@ -398,7 +410,10 @@ export default {
     // 保存编辑
     saveEdit () {
       let d = this.form.birth
-      var datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+      var datetime = d
+      if (d instanceof Date) {
+        datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+      }
       var params = new URLSearchParams()
       params.append('id', this.form.id)
       params.append('username', this.form.username)
@@ -447,6 +462,16 @@ export default {
         })
         .catch(failResponse => {})
       _this.delVisible = false
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteUsers?id=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }

@@ -288,6 +288,16 @@ export default {
         })
         .catch(failResponse => {})
       this.delVisible = false
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteSongLists?id=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }

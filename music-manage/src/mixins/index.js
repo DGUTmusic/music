@@ -17,10 +17,10 @@ export const mixin = {
     delAll () {
       const length = this.multipleSelection.length
       for (let i = 0; i < length; i++) {
-        this.handleDelete(this.multipleSelection[i].index)
-        this.deleteRow(this.multipleSelection[i].index)
+        this.deleteRowByRow(this.multipleSelection[i].id)
       }
-      this.multipleSelection = []
+      // 重新刷新页面
+      location.reload()
     },
     // 得到歌曲名字
     replaceFName (str) {

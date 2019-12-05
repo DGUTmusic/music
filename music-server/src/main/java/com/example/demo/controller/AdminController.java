@@ -32,6 +32,7 @@ public class AdminController {
         if (res){
             jsonObject.put("code", 1);
             jsonObject.put("msg", "登录成功");
+            jsonObject.put("name", name);
             session.setAttribute("name", name);
             return jsonObject;
         }else {

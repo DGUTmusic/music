@@ -31,7 +31,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="歌名" prop="name" width="150"></el-table-column>
-                <el-table-column label="专辑" prop="introduction" width="150"></el-table-column>
+                <el-table-column label="简介" prop="introduction" width="150"></el-table-column>
                 <el-table-column label="歌词">
                     <template slot-scope="scope">
                         <ul style="height: 100px; overflow: scroll">
@@ -306,25 +306,36 @@ export default {
             type: 'warning'
           })
         } else {
-          _this.addSong(res.data[0].id)
+          _this.addSong(res.data[0].id, value)
         }
       }).catch(function (error) {
         console.log(error)
       })
     },
-    addSong (id) {
+    addSong (id, value) {
       let _this = this
       var form = new FormData(document.getElementById('tf'))
       form.append('singerId', id)
+      form.append('singeName', value)
       var req = new XMLHttpRequest()
       req.onreadystatechange = function () {
         if (req.readyState === 4 && req.status === 200) {
-          _this.getData()
-          _this.registerForm = []
-          _this.$notify({
-            title: '添加成功',
-            type: 'success'
-          })
+          var temp = JSON.parse(req.responseText)
+          if (temp.code === 1) {
+            _this.getData()
+            _this.registerForm = []
+            _this.$notify({
+              title: '添加成功',
+              type: 'success'
+            })
+          } else {
+            _this.getData()
+            _this.registerForm = []
+            _this.$notify({
+              title: '添加失败',
+              type: 'error'
+            })
+          }
         }
       }
       req.open('post', `${_this.$store.state.HOST}/api/addSong`, false)
@@ -407,6 +418,16 @@ export default {
         }
       }
       return result
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteSongs?id=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }

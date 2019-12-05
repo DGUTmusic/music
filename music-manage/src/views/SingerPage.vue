@@ -194,36 +194,47 @@ export default {
     },
     addsinger () {
       let _this = this
-      let d = _this.registerForm.birth
-      var datetime =
-        d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      var params = new URLSearchParams()
-      params.append('name', this.registerForm.name)
-      params.append('sex', this.registerForm.sex)
-      params.append('pic', '/img/singerPic/hhh.jpg')
-      params.append('birth', datetime)
-      params.append('location', this.registerForm.location)
-      params.append('introduction', this.registerForm.introduction)
-      _this.$axios
-        .post(`${_this.$store.state.HOST}/api/addSinger`, params)
-        .then(res => {
-          console.log(res)
-          if (res.data.code === 1) {
-            _this.getData()
-            _this.registerForm = []
-            _this.$notify({
-              title: '添加成功',
-              type: 'success'
-            })
-          } else {
-            _this.$notify({
-              title: '添加失败',
-              type: 'error'
-            })
-          }
+      console.log(_this.registerForm.name)
+      if (!_this.registerForm.name || !_this.registerForm.sex || !_this.registerForm.birth) {
+        _this.getData()
+        _this.registerForm = []
+        _this.$notify({
+          title: '必填信息未填完',
+          type: 'error'
         })
-        .catch(failResponse => {})
-      _this.centerDialogVisible = false
+        _this.centerDialogVisible = false
+      } else {
+        let d = _this.registerForm.birth
+        var datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+        var params = new URLSearchParams()
+        params.append('name', this.registerForm.name)
+        params.append('sex', this.registerForm.sex)
+        params.append('pic', '/img/singerPic/hhh.jpg')
+        params.append('birth', datetime)
+        params.append('location', this.registerForm.location)
+        params.append('introduction', this.registerForm.introduction)
+        _this.$axios
+          .post(`${_this.$store.state.HOST}/api/addSinger`, params)
+          .then(res => {
+            console.log(res)
+            if (res.data.code === 1) {
+              _this.getData()
+              _this.registerForm = []
+              _this.$notify({
+                title: '添加成功',
+                type: 'success'
+              })
+            } else {
+              _this.registerForm = []
+              _this.$notify({
+                title: '添加失败',
+                type: 'error'
+              })
+            }
+          })
+          .catch(failResponse => {})
+        _this.centerDialogVisible = false
+      }
     },
     getData () {
       var _this = this
@@ -252,8 +263,10 @@ export default {
     saveEdit () {
       let _this = this
       let d = _this.form.birth
-      let datetime =
-        d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+      var datetime = d
+      if (d instanceof Date) {
+        datetime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+      }
       let params = new URLSearchParams()
       params.append('id', _this.form.id)
       params.append('name', _this.form.name)
@@ -304,6 +317,16 @@ export default {
         })
         .catch(failResponse => {})
       _this.delVisible = false
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteSingers?id=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }

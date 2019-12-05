@@ -108,8 +108,11 @@ export default {
       let _this = this
       _this.tableData = []
       _this.tempDate = []
+      if (this.$route.query) {
+        localStorage.setItem('songListId', _this.$route.query.id)
+      }
       _this.$axios
-        .get(`${_this.$store.state.HOST}/listSongOfSingers?songListId=${_this.$route.query.id}`)
+        .get(`${_this.$store.state.HOST}/listSongOfSingers?songListId=${localStorage.getItem('songListId')}`)
         .then(res => {
           console.log(res.data)
           for (let item of res.data) {
@@ -133,12 +136,22 @@ export default {
     // 获取要添加歌曲的ID
     getSongId () {
       let _this = this
-      var id =
-        _this.registerForm.singerName + '-' + _this.registerForm.songName
+      var id = _this.registerForm.singerName + '-' + _this.registerForm.songName
       _this.$axios
         .get(`${_this.$store.state.HOST}/listSongsOfSearch?name=${id}`)
         .then(res => {
-          _this.addSong(res.data[0].id)
+          console.log(res.data)
+          if (res.data[0].id) {
+            _this.addSong(res.data[0].id)
+          } else {
+            _this.registerForm = []
+            _this.getData()
+            _this.$notify({
+              title: '歌曲未找到',
+              type: 'error'
+            })
+            _this.centerDialogVisible = false
+          }
         })
     },
     // 添加歌曲
@@ -146,17 +159,19 @@ export default {
       let _this = this
       let params = new URLSearchParams()
       params.append('songId', id)
-      params.append('songListId', _this.$route.query.id)
+      params.append('songListId', localStorage.getItem('songListId'))
       _this.$axios
         .post(`${_this.$store.state.HOST}/api/addListSong`, params)
         .then(res => {
           if (res.data.code === 1) {
             _this.getData()
+            _this.registerForm = []
             _this.$notify({
               title: '添加成功',
               type: 'success'
             })
           } else {
+            _this.registerForm = []
             _this.$notify({
               title: '添加失败',
               type: 'error'
@@ -188,6 +203,16 @@ export default {
         })
         .catch(failResponse => {})
       _this.delVisible = false
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteListOfSong?songId=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }

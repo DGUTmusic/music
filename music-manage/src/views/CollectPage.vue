@@ -51,7 +51,7 @@ export default {
     return {
       tableData: [], // 记录歌曲，用于显示
       tempDate: [], // 记录歌曲，用于搜索时能临时记录一份歌曲列表
-      tempId: [], // 记录列表中歌曲的id
+      tempId: [], // 记录列表中记录行的id
       multipleSelection: [], // 记录要删除的歌曲
       delVisible: false, // 显示删除框
       select_word: '', // 记录输入框输入的内容
@@ -85,17 +85,20 @@ export default {
         .get(`${_this.$store.state.HOST}/myCollection?userId=${this.$route.query.id}`)
         .then(res => {
           _this.tableData = []
+          _this.tempDate = []
           for (let item of res.data) {
-            _this.getSongList(item.songId)
+            _this.tempId.push(item.id)
+            _this.getSongList(item.songId, item.id)
           }
         })
     },
     // 通过歌曲ID获取歌曲
-    getSongList (id) {
+    getSongList (id, iid) {
       var _this = this
       _this.$axios
         .get(`${_this.$store.state.HOST}/listSongsOfSongs?id=${id}`)
         .then(function (res) {
+          _this.$set(res.data[0], 'id', iid)
           _this.tableData.push(res.data[0])
           _this.tempDate.push(res.data[0])
         })
@@ -107,7 +110,7 @@ export default {
     deleteRow () {
       var _this = this
       _this.$axios
-        .get(`${_this.$store.state.HOST}/api/deleteCollects?id=${_this.tableData[_this.idx].id}`)
+        .get(`${_this.$store.state.HOST}/api/deleteCollects?id=${_this.tempId[_this.idx]}`)
         .then(response => {
           if (response.data) {
             _this.getData()
@@ -124,6 +127,16 @@ export default {
         })
         .catch(failResponse => {})
       _this.delVisible = false
+    },
+    // 批量删除
+    deleteRowByRow (id) {
+      var _this = this
+      _this.$axios
+        .get(`${_this.$store.state.HOST}/api/deleteCollects?id=${id}`)
+        .then(response => {
+
+        })
+        .catch(failResponse => {})
     }
   }
 }
