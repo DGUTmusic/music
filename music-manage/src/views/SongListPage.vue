@@ -177,7 +177,6 @@ export default {
           if (res.data[0]) {
             let o = res.data[0]
             _this.tableData.push(o)
-            _this.tempDate.push(o)
           }
         })
     },
@@ -193,6 +192,10 @@ export default {
         for (let i = 0; i < 10; i++) {
           this.getId(res.data._embedded.songLists[i].title)
         }
+      })
+      _this.$axios.get(`${_this.$store.state.HOST}/listSongLists`).then((res) => {
+        // _this.tableData = res.data._embedded.songLists
+        _this.tempDate = res.data
       })
     },
     handleCurrentChange (val) {

@@ -4,6 +4,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
+          <a href="javascript:history.go(-1)" style="color:red;cursor:pointer">返回上一页</a>
           <i class="el-icon-tickets"></i> 收藏信息
         </el-breadcrumb-item>
       </el-breadcrumb>

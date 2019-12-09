@@ -234,6 +234,9 @@ export default {
           this.getId(res.data._embedded.songs[i].name)
         }
       })
+      _this.$axios.get(`${_this.$store.state.HOST}/AllSongs`).then((res) => {
+        _this.tempDate = res.data
+      })
     },
     getId (name) {
       let _this = this
@@ -242,7 +245,6 @@ export default {
           if (res.data[0]) {
             let o = res.data[0]
             _this.tableData.push(o)
-            _this.tempDate.push(o)
           }
         })
     },

@@ -53,11 +53,11 @@ export const mixin = {
       let _this = this
       if (res.code === 1) {
         _this.imageUrl = URL.createObjectURL(file.raw)
-        _this.getData()
         _this.$notify({
           title: '上传成功',
           type: 'success'
         })
+        _this.getData()
       } else {
         _this.$notify({
           title: '上传失败',

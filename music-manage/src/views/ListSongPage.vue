@@ -3,6 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
+          <a href="javascript:history.go(-1)" style="color:red;cursor:pointer">返回上一页</a>
           <i class="el-icon-tickets"></i> 歌单歌曲信息
         </el-breadcrumb-item>
       </el-breadcrumb>
@@ -141,7 +142,7 @@ export default {
         .get(`${_this.$store.state.HOST}/listSongsOfSearch?name=${id}`)
         .then(res => {
           console.log(res.data)
-          if (res.data[0].id) {
+          if (res.data[0]) {
             _this.addSong(res.data[0].id)
           } else {
             _this.registerForm = []
