@@ -67,7 +67,7 @@
   <select id="searachSongLists" resultMap="BaseResultMap" parameterType="java.lang.String">
     select *
     from song
-    where name = #{name, jdbcType=VARCHAR}
+    where name like '%${ name }%'
   </select>
 
   <select id="songOfName" resultMap="BaseResultMap" parameterType="java.lang.String">

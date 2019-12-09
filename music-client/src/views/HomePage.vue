@@ -24,8 +24,8 @@ export default {
   data () {
     return {
       songsList: [
-        {name: '歌单', list: []},
-        {name: '歌手', list: []}
+        {name: '推荐歌单', list: []},
+        {name: '推荐歌手', list: []}
       ]
     }
   },

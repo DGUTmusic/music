@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import com.example.demo.domain.Song;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public interface SongMapper {
 
     List<Song> listSongsOfSongs(Integer id);
 
-    List<Song> searachSongLists(String name);
+    List<Song> searachSongLists(@Param(value = "name") String name);
 
     List<Song> songOfName(String name);
 
