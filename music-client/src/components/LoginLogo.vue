@@ -2,7 +2,7 @@
   <div class="login-logo">
     <div class="item-logo">
       <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-erji"></use>
+        <use xlink:href="#icon-ali-pay"></use>
       </svg>
     </div>
   </div>

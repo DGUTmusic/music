@@ -30,7 +30,7 @@ export default {
 
 <style>
 #app{
-  background-color: #e6ecf0;
+  background-color: #def0fc;
   display: flex;
   flex-direction: column;
 }

@@ -4,7 +4,7 @@
     <div class="head-logo" @click="goHomePage">
       <div class="logo-hd">
         <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-erji"></use>
+          <!-- <use xlink:href="#icon-xihuan-shi"></use> -->
         </svg>
       </div>
       <span>{{musicName}}</span>
@@ -44,7 +44,7 @@ export default {
   mixins: [mixin],
   data () {
     return {
-      musicName: 'music',
+      musicName: '在线音乐网站',
       navMsg: [{
         name: '首页',
         path: '/home-page'
@@ -150,11 +150,12 @@ export default {
 .head-logo {
   width: 150px;
   line-height: 80px;
-  font-size: 28px;
+  font-size: 23px;
   font-weight: bold;
   margin-left: 90px;
   display: inline-block;
   cursor: pointer;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 .logo-hd{
